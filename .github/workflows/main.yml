@@ -35,5 +35,3 @@ jobs:
         login-server: ${{ secrets.ACR_REGISTRY_URL }}
     - name: Publish
       run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=DefaultContainer
-    
-Footer
