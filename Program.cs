@@ -3,7 +3,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddOutputCache(options =>
+{
+    options.AddBasePolicy(builder => builder.Expire(TimeSpan.FromSeconds(10)));
+});
+
 var app = builder.Build();
+
+app.UseOutputCache();
 
 if (app.Environment.IsDevelopment())
 {
@@ -17,13 +24,13 @@ var summaries = new[]
 };
 
 app.MapGet("/weatherforecast", () =>
-    Results.Ok(Enumerable.Range(1, 10).Select(index =>
+    TypedResults.Ok(Enumerable.Range(1, 10).Select(index =>
         new WeatherForecast
         (
             DateTime.Now.AddDays(index),
             Random.Shared.Next(-15, 40),
             summaries[Random.Shared.Next(summaries.Length)]
-        )))).Produces<WeatherForecast[]>();
+        )))).CacheOutput();
 
 app.Run();
 
