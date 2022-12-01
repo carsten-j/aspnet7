@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 builder.Services.AddRateLimiter(limiterOptions =>
 {
     limiterOptions.OnRejected = (context, rateLimit) =>
@@ -18,11 +19,17 @@ builder.Services.AddRateLimiter(limiterOptions =>
         options.Window = TimeSpan.FromSeconds(10);
         options.QueueLimit = 1;
     });
+
+builder.Services.AddOutputCache(options =>
+{
+    options.AddBasePolicy(builder => builder.Expire(TimeSpan.FromSeconds(10)));
 });
 
 var app = builder.Build();
 
 app.UseRateLimiter();
+app.UseOutputCache();
+
 
 if (app.Environment.IsDevelopment())
 {
@@ -43,6 +50,15 @@ app.MapGet("/weatherforecast", () =>
             Random.Shared.Next(-15, 40),
             summaries[Random.Shared.Next(summaries.Length)]
         )))).RequireRateLimiting("fixed");
+
+app.MapGet("/weatherforecast_cached", () =>
+    TypedResults.Ok(Enumerable.Range(1, 10).Select(index =>
+        new WeatherForecast
+        (
+            DateTime.Now.AddDays(index),
+            Random.Shared.Next(-15, 40),
+            summaries[Random.Shared.Next(summaries.Length)]
+        )))).CacheOutput();
 
 app.Run();
 

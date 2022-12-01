@@ -8,7 +8,15 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0" />
+    <PackageReference Include="Microsoft.NET.Build.Containers" Version="0.2.7" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <ContainerRegistry>eksponentcontainerregistry.azurecr.io</ContainerRegistry>
+    <ContainerImageName>eksponentcontainerregistry.azurecr.io/aspnetcore7-chiseled</ContainerImageName>
+    <ContainerImageTag>1.2.0</ContainerImageTag>
+    <ContainerBaseImage>mcr.microsoft.com/dotnet/nightly/aspnet:7.0-jammy-chiseled</ContainerBaseImage>
+  </PropertyGroup>
 
 </Project>
