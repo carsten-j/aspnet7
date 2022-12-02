@@ -19,6 +19,7 @@ builder.Services.AddRateLimiter(limiterOptions =>
         options.Window = TimeSpan.FromSeconds(10);
         options.QueueLimit = 1;
     });
+});
 
 builder.Services.AddOutputCache(options =>
 {
